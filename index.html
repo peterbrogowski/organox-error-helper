@@ -1,205 +1,697 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0b1320" />
-<link rel="manifest" href="manifest.json">
-<title>OrganOx Error Code Helper (v1.1c)</title>
-<style>
-:root{--bg:#0b1320;--card:#141c2b;--muted:#7da4ff;--txt:#eaf2ff}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1320,#10192a);color:var(--txt);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-.wrap{max-width:980px;margin:0 auto;padding:16px}
-h1{margin:0 0 6px;font-weight:800;font-size:22px}
-.sub{opacity:.85;margin-bottom:12px}
-.box{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-bottom:12px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-input[type=text]{flex:1;min-width:240px;background:#0e1625;color:var(--txt);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;font-size:16px;outline:none}
-button{background:linear-gradient(180deg,#3b82f6,#2563eb);color:white;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
-button.secondary{background:#0e1625;border:1px solid rgba(255,255,255,.14);color:#dbe7ff}
-.hint{font-size:13px;opacity:.85;margin-top:4px}
-.results{margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
-.card{background:#0f1726;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px}
-.badge{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);opacity:.9;margin-left:6px}
-.LOW{background:rgba(157,232,164,.12);border-color:rgba(157,232,164,.35)}
-.MED{background:rgba(255,210,125,.12);border-color:rgba(255,210,125,.4)}
-.code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0d1422;padding:2px 6px;border-radius:8px}
-footer{font-size:12px;opacity:.8;margin-top:12px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#0f1726;border:1px solid rgba(255,255,255,.14);padding:10px 12px;border-radius:10px;opacity:0;transition:.2s;pointer-events:none}
-.toast.show{opacity:1}
-.count{font-size:12px;opacity:.8;margin-left:auto}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrganOx Error Code Helper</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7aa2ff">
+  <link rel="apple-touch-icon" href="icon-192x192.png">
+  <style>
+    :root {
+      --bg: #0b1320;
+      --card: #121a2a;
+      --ink: #e6eefc;
+      --muted: #a3b1c6;
+      --acc: #7aa2ff;
+      --warn: #ffd166;
+      --bad: #ff6b6b;
+      --good: #00c853;
+      --low: #78ffd6;
+      --med: #ffcc80;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --round: 16px;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0; padding: 20px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--ink); 
+      background: linear-gradient(120deg, #0a0f1a, #101a2c 40%, #0a0f1a);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1100px; 
+      margin: 0 auto;
+    }
+    
+    h1 { 
+      margin: 0 0 8px; 
+      font-weight: 700; 
+      letter-spacing: 0.2px; 
+    }
+    
+    .subtitle { 
+      color: var(--muted); 
+      margin-bottom: 20px; 
+      line-height: 1.4;
+    }
+    
+    .card {
+      background: rgba(18, 26, 42, 0.95);
+      border: 1px solid rgba(122, 162, 255, 0.22);
+      border-radius: var(--round); 
+      padding: 16px; 
+      margin: 12px 0;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+    }
+    
+    .search-section {
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    input, textarea, select, button {
+      background: #0f1626; 
+      color: var(--ink);
+      border: 1px solid rgba(122, 162, 255, 0.35);
+      border-radius: 12px; 
+      padding: 12px 16px; 
+      font-size: 16px;
+      outline: none; 
+      transition: all 150ms ease;
+      font-family: inherit;
+    }
+    
+    input:focus, textarea:focus, select:focus { 
+      border-color: var(--acc); 
+      box-shadow: 0 0 0 2px rgba(122,162,255,0.15); 
+    }
+    
+    button { 
+      cursor: pointer; 
+      font-weight: 600;
+      white-space: nowrap;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .btn-primary { 
+      background: linear-gradient(180deg, #7aa2ff, #547eea); 
+      color: #0e1320; 
+      border: none; 
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(122, 162, 255, 0.3);
+    }
+    
+    .btn-secondary { 
+      background: transparent; 
+      border-color: rgba(122, 162, 255, 0.5);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(122, 162, 255, 0.1);
+    }
+    
+    .btn-small { 
+      padding: 8px 12px; 
+      font-size: 14px; 
+    }
+    
+    .tag { 
+      display: inline-block; 
+      padding: 4px 10px; 
+      border-radius: 999px; 
+      font-size: 12px; 
+      font-weight: 600;
+    }
+    
+    .tag-low { 
+      background: rgba(120,255,214,0.15); 
+      color: var(--low); 
+      border: 1px solid rgba(120,255,214,0.4); 
+    }
+    
+    .tag-med { 
+      background: rgba(255,204,128,0.15); 
+      color: var(--warn); 
+      border: 1px solid rgba(255,204,128,0.4); 
+    }
+    
+    .code-display { 
+      font-family: var(--mono); 
+      background: rgba(13, 20, 34, 0.8); 
+      padding: 4px 8px; 
+      border-radius: 6px; 
+      font-weight: 600;
+    }
+    
+    .log-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .log-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .results-grid {
+      display: grid;
+      gap: 16px;
+    }
+    
+    .error-card {
+      background: rgba(18, 26, 42, 0.98);
+      border: 1px solid rgba(122, 162, 255, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 200ms ease;
+    }
+    
+    .error-card:hover {
+      border-color: rgba(122, 162, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    
+    .error-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .error-code {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--acc), #9bb8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .details-table th {
+      text-align: left;
+      padding: 8px 0;
+      color: var(--acc);
+      font-weight: 600;
+      width: 120px;
+      vertical-align: top;
+    }
+    
+    .details-table td {
+      padding: 8px 0;
+      line-height: 1.5;
+      vertical-align: top;
+    }
+    
+    .details-table tr {
+      border-bottom: 1px solid rgba(122, 162, 255, 0.1);
+    }
+    
+    .details-table tr:last-child {
+      border-bottom: none;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    
+    .session-info {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    
+    .install-prompt {
+      background: linear-gradient(135deg, rgba(122, 162, 255, 0.1), rgba(122, 162, 255, 0.05));
+      border: 1px solid rgba(122, 162, 255, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    
+    .install-prompt.show {
+      display: block;
+    }
+    
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(122, 162, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      .search-section {
+        flex-direction: column;
+      }
+      
+      .log-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .log-buttons {
+        justify-content: center;
+      }
+      
+      .details-table th {
+        width: 100px;
+        font-size: 14px;
+      }
+    }
+    
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(122, 162, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--acc);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-  <h1>OrganOx Error Code Helper</h1>
-  <div class="sub">Local/offline. Search IFU codes (pp. 73–87). Add/modify codes. Export lookup log. — v1.1c</div>
-
-  <div class="box">
-    <div class="row">
-      <input id="codeInput" type="text" placeholder="Enter code(s) or text… e.g., 250 10xx* battery" />
-      <button id="lookupBtn">Look up</button>
-      <button id="showAllBtn" class="secondary">Show all</button>
-      <button id="clearBtn" class="secondary">Clear</button>
-      <span class="count" id="count"></span>
+  <div class="container">
+    <!-- Install prompt -->
+    <div id="installPrompt" class="install-prompt">
+      <strong>📱 Install this app</strong>
+      <p>Add OrganOx Error Helper to your home screen for quick offline access during procedures.</p>
+      <button id="installButton" class="btn-primary btn-small">Install App</button>
+      <button id="dismissInstall" class="btn-secondary btn-small">Maybe Later</button>
     </div>
-    <div class="hint">Tips: separate by spaces/commas. You can also search text (e.g., “oxygenator”, “battery”). Matching is forgiving: 250 == 250† == 250*.</div>
+
+    <header>
+      <h1>OrganOx Error Code Helper</h1>
+      <p class="subtitle">
+        Quick lookup for OrganOx metra error codes during perfusion cases. 
+        Works offline • Session logging • Multiple code lookup
+        <br><small class="muted">Source: IFU-001-US Rev06, pages 73–87</small>
+      </p>
+    </header>
+
+    <!-- Search Section -->
+    <section class="card">
+      <div class="search-section">
+        <input 
+          type="text" 
+          id="codeInput" 
+          class="search-input"
+          placeholder="Enter error code(s): e.g., 50, 60*, 370, 10xx*" 
+          autocomplete="off"
+        />
+        <button class="btn-primary" onclick="lookupCodes()">
+          <span id="searchIcon">🔍</span> Look Up
+        </button>
+        <button class="btn-secondary" onclick="showAllCodes()">Show All</button>
+        <button class="btn-secondary" onclick="clearResults()">Clear</button>
+      </div>
+    </section>
+
+    <!-- Session Log -->
+    <section class="card">
+      <div class="log-controls">
+        <div>
+          <strong>Session Log</strong>
+          <div class="session-info" id="sessionInfo">No lookups yet</div>
+        </div>
+        <div class="log-buttons">
+          <button class="btn-secondary btn-small" onclick="exportSessionLog()">📄 Export CSV</button>
+          <button class="btn-secondary btn-small" onclick="clearSessionLog()">🗑️ Clear Log</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <div id="results"></div>
+
+    <footer class="footer">
+      OrganOx Error Code Helper v2.0 • Built from IFU-001-US Rev06 • 59 error codes • Works offline
+    </footer>
   </div>
 
-  <div class="box">
-    <div class="row">
-      <div>Session Log</div>
-      <div class="count" id="logCount"></div>
-      <button id="exportLog" class="secondary">Export Log (CSV)</button>
-      <button id="resetLog" class="secondary">Reset</button>
-    </div>
-    <div id="logView" class="hint" style="margin-top:6px"></div>
-  </div>
+  <script>
+    // Error code database
+    const ERROR_CODES = [
+      {"code": "50", "priority": "MED", "meaning": "Measured blood temperature > 41°C", "causes": "Ambient temperature too high; Blood gas analyzer not operational; Water not circulating through heater and oxygenator", "actions": "Remove OrganOx metra cover and/or move device to a cooler environment IMMEDIATELY. Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Check that both water connections to oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists."},
+      {"code": "60*", "priority": "MED", "meaning": "Measured blood temperature > 41°C for more than 10 minutes", "causes": "Blood gas analyzer temperature sensor or water heater malfunction.", "actions": "Stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ."},
+      {"code": "80*†", "priority": "MED", "meaning": "Low battery", "causes": "No external power source; Battery nearing end-of-life.", "actions": "Connect to an external power source. Note that temperature control and oxygenation will be automatically shut down once alarm sounds. Ensure battery is fully charged before device used again. Contact your Clinical Specialist if rapid discharge problem persists."},
+      {"code": "90*†", "priority": "MED", "meaning": "Empty battery – system has stopped", "causes": "Battery empty. No external power source.", "actions": "URGENTLY connect to an external power source and re-start the perfusion or re-start the device as necessary. If no power source available, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ."},
+      {"code": "100", "priority": "LOW", "meaning": "Glucose update required", "causes": "No glucose value has been entered for 4 hours or more", "actions": "Measure blood glucose and enter value."},
+      {"code": "110", "priority": "LOW", "meaning": "Less than 2 hours of perfusion remaining.", "causes": "Perfusion has exceeded 22 hours with a maximum allowed period of 24 hours.", "actions": "Remove liver from device as per IFU by 24 hours."},
+      {"code": "120", "priority": "LOW", "meaning": "Temperature within electronics enclosure > 60°C", "causes": "Excessive heat production or reduced heat dissipation within device.", "actions": "Ensure blood temperature remains physiological. Remove outer hardcover and/or move device to cooler environment. If problem persists contact your Clinical Specialist"},
+      {"code": "130", "priority": "MED", "meaning": "Temperature within electronics enclosure is > 70°C – system has stopped", "causes": "Excessive heat production or reduced heat dissipation within device.", "actions": "Ensure blood temperature remains physiological. URGENTLY remove outer hardcover and/or move device to cooler environment. Re-start the perfusion or re-start the device as necessary. If problem persists contact your Clinical Specialist."},
+      {"code": "140*†", "priority": "MED", "meaning": "No IVC pressure detected", "causes": "IVC pressure sensor is not connected; IVC pressure sensor is faulty", "actions": "Check that IVC pressure sensor is connected. Disconnect and reconnect IVC sensor according to IFU. If liver not connected, replace disposable set (do not attempt to replace sensor). If liver connected, stop perfusion and remove liver from device using cold perfusion. If problem persists with different disposable set, contact your Clinical Specialist."},
+      {"code": "150*†", "priority": "MED", "meaning": "No Arterial pressure detected", "causes": "Arterial pressure sensor is not connected; Arterial pressure sensor is faulty", "actions": "Check that arterial pressure sensor is connected. Disconnect and reconnect IVC sensor according to IFU. If liver not connected, replace disposable set (do not attempt to replace sensor). If liver connected, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. If problem persists with different disposable set, contact your Clinical Specialist."},
+      {"code": "170*†", "priority": "MED", "meaning": "No blood temperature measurement detected", "causes": "Blood gas analyzer not operational; Blood gas analysis sensor is faulty", "actions": "Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. If problem persists, stop perfusion and remove liver from device using cold perfusion It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "180*‡", "priority": "LOW", "meaning": "interface board (IFB) timeout / no replies / IFB cyclic redundancy check (CRC) error", "causes": "Hardware fault", "actions": "Fault will normally self-resolve. Check the following on the OrganOx metra GUI over a period of 5 minutes to ensure that it has: 1) Temperature is controlled to >36C; 2) pO2 and pCO2 values remain within the normal range indicated; 3) Centrifugal pump target RPM and actual RPM are within 100 RPM and IVC flow is non-zero. If this is not the case, power down and restart the OrganOx metra as per IFU. If error still persists with liver on board, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist"},
+      {"code": "190*‡", "priority": "MED", "meaning": "Terumo timeout / no replies Terumo CRC error", "causes": "Blood gas analyzer not operational; Hardware fault", "actions": "Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "200*‡", "priority": "MED", "meaning": "Centrifugal Pump Error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "210*‡", "priority": "MED", "meaning": "Air compressor error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "220*‡", "priority": "MED", "meaning": "Upper proportional pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "230*‡", "priority": "MED", "meaning": "Lower proportional pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "240‡", "priority": "MED", "meaning": "Portal flow sensor error: system cannot detect air bubbles", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist. It is the surgeon's discretion whether to transplant this organ."},
+      {"code": "250‡", "priority": "MED", "meaning": "IVC flow sensor error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "260", "priority": "MED", "meaning": "Battery monitor error - no battery level available", "causes": "Hardware fault", "actions": "Urgently connect device to an external power supply (note - no warning will be given of empty battery). Contact your Clinical Specialist."},
+      {"code": "270", "priority": "MED", "meaning": "Syringes need replacement", "causes": "Occluded tubing", "actions": "Check all four syringe lines for occlusions. If problem persists, contact your Clinical Specialist."},
+      {"code": "280", "priority": "MED", "meaning": "High water temperature", "causes": "Water not circulating through heater and oxygenator; Blood gas analyzer providing erroneous blood temperature information; Ambient temperature too high", "actions": "Check that both water inlet and outlet connects to oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists. Check installation of blood gas analyzer (BGA) sensor. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Move device to a cooler environment."},
+      {"code": "290†", "priority": "MED", "meaning": "Low water reservoir", "causes": "Not enough water in reservoir; System tilted to expose level sensor; Possible leak in water circulation system", "actions": "Check and re-fill water reservoir Level the system as soon as practicable Check for leaks and re-fill water reservoir as necessary. Contact your Clinical Specialist if problem persists."},
+      {"code": "300", "priority": "LOW", "meaning": "Ascites pump running continuously", "causes": "Excessive fluid leakage from liver; Malfunction of ascites recirculation system.", "actions": "Check surgical integrity of liver and take necessary action. Check ascites level sensorCorrect fitting of ascites recirculation line through pump. Contact your Clinical Specialist if problem persists."},
+      {"code": "310", "priority": "MED", "meaning": "Ascites pump never running", "causes": "Malfunction of ascites recirculation system; Hardware fault", "actions": "Check whether fluid has accumulated in liver bowl, and if so check ascites level sensor. Contact your Clinical Specialist if problem persists. Contact your Clinical Specialist."},
+      {"code": "320", "priority": "MED", "meaning": "No water temperature measurement detected", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. Check that blood temperature remains physiological. If not, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "330*", "priority": "MED", "meaning": "Frequently empty blood reservoir", "causes": "Excessive fluid in liver bowl", "actions": "Check surgical integrity of liver and take necessary action. Check that IVC drainage is occurring and reposition cannula if necessary. Check functioning of ascites recirculation system. If issue persists, add human albumin to replenish reservoir."},
+      {"code": "340†", "priority": "MED", "meaning": "Clinimix® pump error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists and liver already on board, deliver nutrition manually as per the IFU. Contact your Clinical Specialist."},
+      {"code": "350†", "priority": "MED", "meaning": "Bile pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists and liver already on board, remove bile tubing from bile pinch valve - bile will now drain freely into bile collection compartment and bile production will no longer be automatically measured. Contact your Clinical Specialist."},
+      {"code": "360", "priority": "MED", "meaning": "Excessive blood/water temperature difference.", "causes": "Blood gas analyzer providing erroneous blood temperature information. Or the Terumo sensor is not fully engaged.", "actions": "Check installation of blood gas analyzer (BGA) sensor. Check that the Terumo sensor is correctly fitted and is clicked into place. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. If the problem persists remove the liver using the rapid retrieval technique and contact your Clinical Specialist if problem persists."},
+      {"code": "370", "priority": "MED", "meaning": "Low portal vein flow", "causes": "Portal tubing kinked, Roberts clamp not open, or poor cannula placement; Empty reservoir; Lower pinch valve malfunction", "actions": "Re-wet portal flow sensor. Ensure Roberts clamp on portal line within liver bowl is fully open and check portal line for kinks. If issue persists, reposition liver and portal cannula. Check whether fluid has accumulated in liver bowl, and if so check ascites level sensor and pump. Add human albumin solution to replenish reservoir if appropriate. Contact your Clinical Specialist if problem persists. Press 'Stop Perfusion', then 'Remove Cartridge' twice to fully open pinch valve, then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem still persists with liver on board, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist"},
+      {"code": "380", "priority": "MED", "meaning": "Low IVC flow", "causes": "IVC tubing kinked, Roberts clamp not open, or poor cannula placement.", "actions": "Ensure Roberts clamp on IVC line within liver bowl is fully open and check IVC line for kinks. If issue persists, reposition liver and IVC cannula."},
+      {"code": "390", "priority": "MED", "meaning": "Low hepatic artery flow", "causes": "Arterial tubing kinked, Roberts clamp not open, or poor cannula placement; Upper pinch valve malfunction; Hardware fault", "actions": "Ensure Roberts clamp on arterial line within liver bowl is fully open and check arterial line for kinks. If issue persists, reposition liver and arterial cannula. Press 'Stop Perfusion', then 'Remove Cartridge' twice to fully open pinch valve, then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem persists with liver on board, stop perfusion and remove liver using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Press 'Stop Perfusion', then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem still persists with liver on board, stop perfusion and remove liver using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "400", "priority": "MED", "meaning": "Low blood temperature", "causes": "Water not circulating through heater and oxygenator", "actions": "Check that both water inlet and outlet connections to the oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists."},
+      {"code": "410*", "priority": "MED", "meaning": "Low blood oxygen levels", "causes": "Oxygenator gas port not connected; Blood not circulating through blood gas analyzer bypass line; Hardware fault", "actions": "Check that gas line into oxygenator is fully engaged and has no kinks. Contact your Clinical Specialist if problem persists. Check that the Roberts clamps on the blood gas analyzer bypass line are fully open, that the Terumo sensor is connected and that there are no kinks or obstructions on the line. Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon's discretion whether to transplant this organ. Contact your Clinical Specialist."},
+      {"code": "430", "priority": "MED", "meaning": "Unable to determine power source", "causes": "Hardware fault", "actions": "Urgently connect device to an external power supply (note - no warning will be given of empty battery). Contact your Clinical Specialist."},
+      {"code": "450", "priority": "LOW", "meaning": "Measured blood temperature > 38°C", "causes": "Ambient temperature too high; Blood gas analyzer not operational", "actions": "Remove the OrganOx metra cover and/or move device to a cooler environment as soon as possible. Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists."},
+      {"code": "460", "priority": "LOW", "meaning": "Measured tower temperature < 5°C", "causes": "Ambient temperature too low", "actions": "Move device to a warmer environment as soon as possible. Contact your Clinical Specialist if problem persists."},
+      {"code": "470", "priority": "LOW", "meaning": "Oxygen Concentrator Failure", "causes": "Hardware fault", "actions": "Stop perfusion and attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."},
+      {"code": "480", "priority": "LOW", "meaning": "High blood oxygen levels measured continuously for more than 3 minutes", "causes": "Blood not circulating through BGA bypass line", "actions": "Contact your Clinical Specialist if problem persists."},
+      {"code": "490", "priority": "LOW", "meaning": "High blood carbon dioxide levels measured continuously for more than 3 minutes", "causes": "No gas flow into oxygenator", "actions": "Check that the oxygenator gas inlet Colder Products Company (CPC) connector is fully engaged into the male panel mount CPC connector just above the portal flow sensor. Check that the BGA sensor is correctly fitted and is clicked in place. Check that the Roberts clamps on the BGA bypass line are fully open. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."},
+      {"code": "500", "priority": "LOW", "meaning": "Low blood carbon dioxide levels measured continuously for more than 3 minutes", "causes": "Blood not circulating through BGA bypass line; BGA not operational; Hardware fault", "actions": "Check that the Roberts clamps on the BGA bypass line are fully open, that the Terumo sensor is connected and that there are no kinks or obstructions on the line. Check that the BGA sensor is correctly fitted and is clicked in place. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."},
+      {"code": "510", "priority": "LOW", "meaning": "Arterial blood pressure in excess of 100 mmHg for more than 3 minutes", "causes": "Arterial tubing kinked, Roberts clamp not open, or poor cannula placement; Upper pinch valve malfunction; Hardware fault", "actions": "Press 'Stop Perfusion' and then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."},
+      {"code": "520", "priority": "LOW", "meaning": "Power Board Fault", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion, it is at the discretion of the transplanting surgeon if this organ is transplanted. Contact your Clinical Specialist if problem persists."},
+      {"code": "10xx*", "priority": "LOW", "meaning": "Internal software fault", "causes": "An unexpected software condition has occurred", "actions": "Re-start system (stop, switch off and on, start). Report failure to OrganOx, and provide log files for analysis"},
+      {"code": "2060", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Measured blood temperature exceeded 41°C for more than 10 minutes at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2080", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Low battery potentially led to temperature control and oxygenation being shut down", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2090", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Empty battery led to system stopping", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2140", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No IVC pressure measurement was detected for more than 10s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2150", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No arterial pressure measurement was detected for more than 10s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2170", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No blood temperature measurement was detected for more than 10s at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2180", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An Interface Board (IFB) error occurred for more than 5s at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2190", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No measurements could be retrieved from the Terumo blood gas analyzer for more than 5s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2200", "priority": "LOW", "meaning": "Critical fault reported", "causes": "A Centrifugal pump error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2210", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An air compressor error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2220", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An upper proportional pinch valve error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2230", "priority": "LOW", "meaning": "Critical fault reported", "causes": "A lower proportional pinch valve error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2330", "priority": "LOW", "meaning": "Critical fault reported", "causes": "The reservoir was frequently empty over the course of 30 minutes or more at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."},
+      {"code": "2410", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Low blood oxygen levels were measured continuously for several minutes at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}
+    ];
 
-  <div class="box">
-    <div class="row">
-      <div><strong>Edit Mode</strong> (saved to this device)</div>
-      <button id="toggleEdit" class="secondary">Toggle</button>
-      <button id="exportData" class="secondary">Export Data (JSON)</button>
-      <input type="file" id="importFile" accept=".json" />
-    </div>
-    <div id="editPane" style="display:none;margin-top:8px">
-      <div class="row">
-        <input id="newCode" placeholder="Code (e.g., 50 or 10xx*)" />
-        <select id="newPriority">
-          <option value="MED">MED</option>
-          <option value="LOW">LOW</option>
-        </select>
-      </div>
-      <div class="row"><input id="newMeaning" placeholder="Meaning" style="flex:1" /></div>
-      <div class="row"><input id="newCauses" placeholder="Possible Cause(s)" style="flex:1" /></div>
-      <div class="row"><input id="newActions" placeholder="Action(s)" style="flex:1" /></div>
-      <div class="row"><button id="addEntry">Add</button></div>
-      <hr style="opacity:.2;margin:12px 0">
-      <div class="row">
-        <input id="editCode" placeholder="Exact code to edit/delete" />
-        <input id="editMeaning" placeholder="Meaning (blank=keep)" style="flex:1" />
-      </div>
-      <div class="row"><input id="editCauses" placeholder="Causes (blank=keep)" style="flex:1" /></div>
-      <div class="row"><input id="editActions" placeholder="Actions (blank=keep)" style="flex:1" /></div>
-      <div class="row">
-        <select id="editPriority">
-          <option value="">Keep priority</option>
-          <option value="MED">MED</option>
-          <option value="LOW">LOW</option>
-        </select>
-        <button id="applyEdit" class="secondary">Apply Edit</button>
-        <button id="deleteEntry" class="secondary">Delete</button>
-      </div>
-    </div>
-  </div>
+    // Session management
+    let sessionLog = [];
+    let deferredPrompt;
 
-  <div id="results" class="results"></div>
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSessionLog();
+      updateSessionInfo();
+      setupInstallPrompt();
+      
+      // Enable Enter key for search
+      document.getElementById('codeInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          lookupCodes();
+        }
+      });
+    });
 
-  <footer>Built from IFU-001-US Rev06. Extracted 59 entries. No PHI stored. PWA-ready (manifest + service worker).</footer>
-</div>
+    // PWA Installation
+    function setupInstallPrompt() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installPrompt').classList.add('show');
+      });
 
-<div id="toast" class="toast">No matches found.</div>
+      document.getElementById('installButton').addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          deferredPrompt = null;
+          document.getElementById('installPrompt').classList.remove('show');
+        }
+      });
 
-<script>
-const IFU_DATA = [{"code": "50", "priority": "MED", "meaning": "Measured blood temperature > 41°C", "causes": "Ambient temperature t oo high Blood gas analyzer not operational Water not circulating through heater and oxygenator", "actions": "Remove OrganOx metra cover and/or move device to a cooler environment IMMEDIATELY. Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Check that both water connections to oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists."}, {"code": "60*", "priority": "MED", "meaning": "Measured blood temperature > 41°C for more than 10 minutes", "causes": "Blood gas analyzer temperature sensor or water heater malfunction.", "actions": "Stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ."}, {"code": "80*†", "priority": "MED", "meaning": "Low battery", "causes": "No external power source Battery nearing end-of- life.", "actions": "Connect to an external power source. Note that temperature control and oxygenation will be automatically shut down once alarm sounds. Ensure battery is fully charged before device used again. Contact your Clinical Specialist if rapid discharge problem persists."}, {"code": "90*†", "priority": "MED", "meaning": "Empty battery – system has stopped", "causes": "Battery empty. No external power source.", "actions": "URGENTLY connect to an external power source and re-start the perfusion or re- start the device as necessary. If no power source available, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ."}, {"code": "100", "priority": "LOW", "meaning": "Glucose update required", "causes": "No glucose value has been entered for 4 hours or more", "actions": "Measure blood glucose and enter value."}, {"code": "110", "priority": "LOW", "meaning": "Less than 2 hours of perfusion remaining.", "causes": "Perfusion has exceeded 22 hours with a maximum allowed period of 24 hours.", "actions": "Remove liver from device as per IFU by 24 hours."}, {"code": "120", "priority": "LOW", "meaning": "Temperature within electronics enclosure > 60°C", "causes": "Excessive heat production or reduced heat dissipation within device.", "actions": "Ensure blood temperature remains physiological. Remove outer hardcover and/or move device to cooler environment. If problem persists contact your Clinical Specialist"}, {"code": "130", "priority": "MED", "meaning": "Temperature within electronics enclosure is > 70°C – system has stopped", "causes": "Excessive heat production or reduced heat dissipation within device.", "actions": "Ensure blood temperature remains physiological. URGENTLY remove outer hardcover and/or move device to cooler environment. Re-start the perfusion or re-start the device as necessary. If problem persists contact your Clinical Specialist."}, {"code": "140*†", "priority": "MED", "meaning": "No IVC pressure detected", "causes": "IVC pressure sensor is not connected IVC pressure sensor is faulty", "actions": "Check that IVC pressure sensor is connected. Disconnect and reconnect IVC sensor according to IFU. If liver not connected, replace disposable set (do not attempt to replace sensor). If liver connected, stop perfusion and remove liver from device using cold perfusion. If problem persists with diﬀerent disposable set, contact your Clinical Specialist."}, {"code": "150*†", "priority": "MED", "meaning": "No Arterial pressure detected", "causes": "Arterial pressure sensor is not connected Arterial pressure sensor is faulty", "actions": "Check that arterial pressure sensor is connected. Disconnect and reconnect IVC sensor according to IFU. If liver not connected, replace disposable set (do not attempt to replace sensor). If liver connected, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. If problem persists with diﬀerent disposable set, contact your Clinical Specialist."}, {"code": "170*†", "priority": "MED", "meaning": "No blood temperature measurement detected", "causes": "Blood gas analyzer not operational Blood gas analysis sensor is faulty", "actions": "Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. If problem persists, stop perfusion and remove liver from device using cold perfusion It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "180*‡", "priority": "LOW", "meaning": "interface board (IFB) timeout / no replies / IFB cyclic redundancy check (CRC) error", "causes": "Hardware fault", "actions": "Fault will normally self-resolve. Check the following on the OrganOx metra GUI over a period of 5 minutes to ensure that it has: 1) Temperature is controlled to >36C; 2) pO and pCO values remain 2 2 within the normal range indicated; 3) Centrifugal pump target RPM and actual RPM are within 100 RPM and IVC ﬂow is non-zero. If this is not the case, power down and restart the OrganOx metra as per IFU. If error still persists with liver on board, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist"}, {"code": "190*‡", "priority": "MED", "meaning": "Terumo timeout / no replies Terumo CRC error", "causes": "Blood gas analyzer not operational Hardware fault", "actions": "Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "200*‡", "priority": "MED", "meaning": "Centrifugal Pump Error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "210*‡", "priority": "MED", "meaning": "Air compressor error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "220*‡", "priority": "MED", "meaning": "Upper proportional pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "230*‡", "priority": "MED", "meaning": "Lower proportional pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "240‡", "priority": "MED", "meaning": "Portal ﬂow sensor error: system cannot detect air bubbles", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist. It is the surgeon’s discretion whether to transplant this organ."}, {"code": "250‡", "priority": "MED", "meaning": "IVC ﬂow sensor error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "260", "priority": "MED", "meaning": "Battery monitor error - no battery level available", "causes": "Hardware fault", "actions": "Urgently connect device to an external power supply (note - no warning will be given of empty battery). Contact your Clinical Specialist."}, {"code": "270", "priority": "MED", "meaning": "Syringes need replacement", "causes": "Occluded tubing", "actions": "Check all four syringe lines for occlusions. If problem persists, contact your Clinical Specialist."}, {"code": "280", "priority": "MED", "meaning": "High water temperature", "causes": "Water not circulating through heater and oxygenator Blood gas analyzer providing erroneous blood temperature information. Ambient temperature too high", "actions": "Check that both water inlet and outlet connects to oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists. Check installation of blood gas analyzer (BGA) sensor. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists. Move device to a cooler environment."}, {"code": "290†", "priority": "MED", "meaning": "Low water reservoir", "causes": "Not enough water in reservoir System tilted to expose level sensor Possible leak in water circulation system", "actions": "Check and re-ﬁll water reservoir Level the system as soon as practicable Check for leaks and re-ﬁll water reservoir as necessary. Contact your Clinical Specialist if problem persists."}, {"code": "300", "priority": "LOW", "meaning": "Ascites pump running continuously", "causes": "Excessive ﬂuid leakage from liver Malfunction of ascites recirculation system.", "actions": "Check surgical integrity of liver and take necessary action. Check ascites level sensorCorrect ﬁtting of ascites recirculation line through pump. Contact your Clinical Specialist if problem persists."}, {"code": "310", "priority": "MED", "meaning": "Ascites pump never running", "causes": "Malfunction of ascites recirculation system. Hardware fault", "actions": "Check whether ﬂuid has accumulated in liver bowl, and if so check ascites level sensor. Contact your Clinical Specialist if problem persists. Contact your Clinical Specialist."}, {"code": "320", "priority": "MED", "meaning": "No water temperature measurement detected", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. Check that blood temperature remains physiological. If not, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "330*", "priority": "MED", "meaning": "Frequently empty blood reservoir", "causes": "Excessive ﬂuid in liver bowl", "actions": "Check surgical integrity of liver and take necessary action. Check that IVC drainage is occurring and reposition cannula if necessary. Check functioning of ascites recirculation system. If issue persists, add human albumin to replenish reservoir."}, {"code": "340†", "priority": "MED", "meaning": "Clinimix® pump error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists and liver already on board, deliver nutrition manually as per the IFU. Contact your Clinical Specialist."}, {"code": "350†", "priority": "MED", "meaning": "Bile pinch valve error", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists and liver already on board, remove bile tubing from bile pinch valve - bile will now drain freely into bile collection compartment and bile production will no longer be automatically measured. Contact your Clinical Specialist."}, {"code": "360", "priority": "MED", "meaning": "Excessive blood/water temperature diﬀerence.", "causes": "Blood gas analyzer providing erroneous blood temperature information. Or the Terumo sensor is not fully engaged.", "actions": "Check installation of blood gas analyzer (BGA) sensor. Check that the Terumo sensor is correctly ﬁtted and is clicked into place. Check that BGA is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. If the problem persists remove the liver using the rapid retrieval technique and contact your Clinical Specialist if problem persists."}, {"code": "370", "priority": "MED", "meaning": "Low portal vein ﬂow", "causes": "Portal tubing kinked, Roberts clamp not open, or poor cannula placement. Empty reservoir Lower pinch valve malfunction", "actions": "Re-wet portal ﬂow sensor. Ensure Roberts clamp on portal line within liver bowl is fully open and check portal line for kinks. If issue persists, reposition liver and portal cannula. Check whether ﬂuid has accumulated in liver bowl, and if so check ascites level sensor and pump. Add human albumin solution to replenish reservoir if appropriate. Contact your Clinical Specialist if problem persists. Press 'Stop Perfusion', then 'Remove Cartridge' twice to fully open pinch valve, then ‘Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem still persists with liver on board, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist"}, {"code": "380", "priority": "MED", "meaning": "Low IVC ﬂow", "causes": "IVC tubing kinked, Roberts clamp not open, or poor cannula placement.", "actions": "Ensure Roberts clamp on IVC line within liver bowl is fully open and check IVC line for kinks. If issue persists, reposition liver and IVC cannula."}, {"code": "390", "priority": "MED", "meaning": "Low hepatic artery ﬂow", "causes": "Arterial tubing kinked, Roberts clamp not open, or poor cannula placement. Upper pinch valve malfunction Hardware fault", "actions": "Ensure Roberts clamp on arterial line within liver bowl is fully open and check arterial line for kinks. If issue persists, reposition liver and arterial cannula. Press 'Stop Perfusion', then 'Remove Cartridge' twice to fully open pinch valve, then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem persists with liver on board, stop perfusion and remove liver using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Press 'Stop Perfusion', then 'Start Perfusion'. If problem persists, power down and restart the OrganOx metra as per IFU. If problem still persists with liver on board, stop perfusion and remove liver using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "400", "priority": "MED", "meaning": "Low blood temperature", "causes": "Water not circulating through heater and oxygenator", "actions": "Check that both water inlet and outlet connections to the oxygenator are fully engaged and have no kinks. Contact your Clinical Specialist if problem persists."}, {"code": "410*", "priority": "MED", "meaning": "Low blood oxygen levels", "causes": "Oxygenator gas port not connected Blood not circulating through blood gas analyzer bypass line Hardware fault", "actions": "Check that gas line into oxygenator is fully engaged and has no kinks. Contact your Clinical Specialist if problem persists. Check that the Roberts clamps on the blood gas analyzer bypass line are fully open, that the Terumo sensor is connected and that there are no kinks or obstructions on the line. Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. It is the surgeon’s discretion whether to transplant this organ. Contact your Clinical Specialist."}, {"code": "430", "priority": "MED", "meaning": "Unable to determine power source", "causes": "Hardware fault", "actions": "Urgently connect device to an external power supply (note - no warning will be given of empty battery). Contact your Clinical Specialist."}, {"code": "450", "priority": "LOW", "meaning": "Measured blood temperature > 38°C", "causes": "Ambient temperature t oo high Blood gas analyzer not operational", "actions": "Remove the OrganOx metra cover and/or move device to a cooler environment as soon as possible. Check that blood gas analyzer (BGA) is in 'Operate' mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. Contact your Clinical Specialist if problem persists."}, {"code": "460", "priority": "LOW", "meaning": "Measured tower temperature < 5°C", "causes": "Ambient temperature too low", "actions": "Move device to a warmer environment as soon as possible. Contact your Clinical Specialist if problem persists."}, {"code": "470", "priority": "LOW", "meaning": "Oxygen Concentrator Failure", "causes": "Hardware fault", "actions": "Stop perfusion and attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."}, {"code": "480", "priority": "LOW", "meaning": "High blood oxygen levels measured continuously for more than 3 minutes", "causes": "Blood not circulating through BGA bypass line", "actions": "Contact your Clinical Specialist if problem persists."}, {"code": "490", "priority": "LOW", "meaning": "High blood carbon dioxide levels measured continuously for more than 3 minutes", "causes": "No gas ﬂow into oxygenator", "actions": "Check that the oxygenator gas inlet Colder Products Company (CPC) connector is fully engaged into the male panel mount CPC connector just above the portal ﬂow sensor. Check that the BGA sensor is correctly ﬁtted and is clicked in place. Check that the Roberts clamps on the BGA bypass line are fully open. Check that BGA is in ‘Operate’ mode and that data displayed on BGA matches data on the OrganOx metra GUI. Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."}, {"code": "500", "priority": "LOW", "meaning": "Low blood carbon dioxide levels measured continuously for more than 3 minutes", "causes": "Blood not circulating through BGA bypass line BGA not operational Hardware fault", "actions": "Check that the Roberts clamps on the BGA bypass line are fully open, that the Terumo sensor is connected and that there are no kinks or obstructions on the line. Check that the BGA sensor is correctly ﬁtted and is clicked in place. Check that BGA is in ‘Operate’ mode and that data displayed on BGA matches data on the OrganOx metra GUI. If not, power the OrganOx metra down and restart as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."}, {"code": "510", "priority": "LOW", "meaning": "Arterial blood pressure in excess of 100 mmHg for more than 3 minutes", "causes": "Arterial tubing kinked, Roberts clamp not open, or poor cannula placement Upper pinch valve malfunction Hardware fault", "actions": "Press ‘Stop Perfusion’ and then ‘Start Perfusion’. If problem persists, power down and restart the OrganOx metra as per IFU. If problem persists, stop perfusion and remove liver from device using cold perfusion. Contact your Clinical Specialist if problem persists."}, {"code": "520", "priority": "LOW", "meaning": "Power Board Fault", "causes": "Hardware fault", "actions": "Attempt to power down and restart the OrganOx metra. If problem persists, stop perfusion and remove liver from device using cold perfusion, it is at the discretion of the transplanting surgeon if this organ is transplanted. Contact your Clinical Specialist if problem persists."}, {"code": "10xx*", "priority": "LOW", "meaning": "Internal software fault", "causes": "An unexpected software condition has occurred", "actions": "Re-start system (stop, switch oﬀ and on, start). Report failure to OrganOx, and provide log ﬁles for analysis"}, {"code": "2060", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Measured blood temperature exceeded 41°C for more than 10 minutes at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2080", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Low battery potentially led to temperature control and oxygenation being shut down", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2090", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Empty battery led to system stopping", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2140", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No IVC pressure measurement was detected for more than 10s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2150", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No arterial pressure measurement was detected for more than 10s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2170", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No blood temperature measurement was detected for more than 10s at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2180", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An Interface Board (IFB) error occurred for more than 5s at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2190", "priority": "LOW", "meaning": "Critical fault reported", "causes": "No measurements could be retrieved from the Terumo blood gas analyzer for more than 5s at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2200", "priority": "LOW", "meaning": "Critical fault reported", "causes": "A Centrifugal pump error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2210", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An air compressor error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2220", "priority": "LOW", "meaning": "Critical fault reported", "causes": "An upper proportional pinch valve error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2230", "priority": "LOW", "meaning": "Critical fault reported", "causes": "A lower proportional pinch valve error occurred at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2330", "priority": "LOW", "meaning": "Critical fault reported", "causes": "The reservoir was frequently empty over the course of 30 minutes or more at some point during the perfusion", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}, {"code": "2410", "priority": "LOW", "meaning": "Critical fault reported", "causes": "Low blood oxygen levels were measured continuously for several minutes at some point during the perfusion.", "actions": "Refer to 'Plot Data Logs' tab for detailed perfusion history."}];
-const LS_DATA_KEY = "organox_ifu_data_v11c";
-const LS_LOG_KEY  = "organox_ifu_session_log_v11c";
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(()=>{});
-  });
-}
-
-function loadData(){ try{ return JSON.parse(localStorage.getItem(LS_DATA_KEY)) || IFU_DATA.slice(); }catch(e){ return IFU_DATA.slice(); }}
-function saveData(d){ localStorage.setItem(LS_DATA_KEY, JSON.stringify(d)); }
-function getLog(){ try{ return JSON.parse(localStorage.getItem(LS_LOG_KEY)) || []; }catch(e){ return []; }}
-function saveLog(l){ localStorage.setItem(LS_LOG_KEY, JSON.stringify(l)); renderLog(); }
-
-function normCode(s){ return (s||"").toString().toLowerCase().replace(/[^a-z0-9]/g,""); }
-function includesText(hay,needle){ return (hay||"").toLowerCase().includes((needle||"").toLowerCase()); }
-
-function lookup(raw){
-  const data = loadData();
-  const tokens = raw.split(/[\s,;]+/).filter(Boolean);
-  if (!tokens.length){ return []; }
-  let results = [];
-  for (const t of tokens){
-    const nt = normCode(t);
-    let hits = data.filter(e => normCode(e.code) === nt);
-    if (!hits.length){
-      const re = new RegExp("^" + nt.replace(/x/g,"[0-9]") + "$");
-      hits = data.filter(e => re.test(normCode(e.code)));
+      document.getElementById('dismissInstall').addEventListener('click', () => {
+        document.getElementById('installPrompt').classList.remove('show');
+      });
     }
-    if (!hits.length){
-      hits = data.filter(e => includesText(e.meaning,t) || includesText(e.causes,t) || includesText(e.actions,t));
+
+    // Code matching logic
+    function matchesCode(errorCode, searchTerm) {
+      const normalizedSearch = searchTerm.toLowerCase().trim();
+      const normalizedError = errorCode.toLowerCase();
+      
+      // Exact match first
+      if (normalizedError === normalizedSearch) {
+        return true;
+      }
+      
+      // Handle wildcard patterns (x for any digit, * is literal)
+      const pattern = normalizedSearch
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape regex chars except x
+        .replace(/x/g, '[0-9]'); // x becomes digit wildcard
+      
+      try {
+        const regex = new RegExp('^' + pattern + '$');
+        return regex.test(normalizedError.replace(/[†‡*]/g, '')); // Remove symbols for matching
+      } catch (e) {
+        return normalizedError.includes(normalizedSearch);
+      }
     }
-    results.push(...hits);
-  }
-  const seen = new Set(); const out=[];
-  for (const r of results){ const k = normCode(r.code); if(!seen.has(k)){ seen.add(k); out.push(r); } }
-  return out;
-}
 
-function render(items){
-  const root = document.getElementById("results");
-  const countEl = document.getElementById("count");
-  countEl.textContent = items.length ? items.length + " match(es)" : "";
-  if (!items.length){ root.innerHTML=""; toast("No matches found."); return; }
-  root.innerHTML = items.map(it => `
-    <div class="card">
-      <div class="row" style="gap:6px;align-items:center">
-        <div><strong>Code:</strong> <span class="code">${escapeHtml(it.code)}</span></div>
-        <span class="badge ${(String(it.priority||'').toUpperCase().startsWith('MED')?'MED':'LOW')}">${escapeHtml(it.priority||'')}</span>
-      </div>
-      <div style="margin-top:6px"><strong>Meaning:</strong> ${escapeHtml(it.meaning)}</div>
-      <div style="margin-top:6px"><strong>Possible Cause(s):</strong> ${escapeHtml(it.causes)}</div>
-      <div style="margin-top:6px"><strong>Action(s):</strong> ${escapeHtml(it.actions)}</div>
-    </div>`).join("");
-}
+    // Main lookup function
+    function lookupCodes() {
+      const input = document.getElementById('codeInput').value.trim();
+      if (!input) {
+        alert('Please enter at least one error code');
+        return;
+      }
 
-function escapeHtml(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;"}[c]));}
-function toast(msg){ const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),1500); }
+      // Show loading
+      document.getElementById('searchIcon').innerHTML = '<div class="loading"></div>';
 
-function addToLog(input, matches){ const log = getLog(); log.push({ time:new Date().toISOString(), input, matches }); saveLog(log); }
-function renderLog(){
-  const log = getLog();
-  document.getElementById("logCount").textContent = log.length ? (log.length+" entries") : "";
-  const last = log.slice(-8).map(x=>`[${x.time}] ${x.input} → ${x.matches}`).join(" • ");
-  document.getElementById("logView").textContent = last || "No lookups yet.";
-}
+      // Parse multiple codes
+      const searchTerms = input.split(/[\s,;]+/).filter(term => term.length > 0);
+      const matches = [];
 
-function exportLog(){
-  const log = getLog();
-  const header = ["time","input","matches"];
-  const rows = [header].concat(log.map(x=>[x.time,x.input,String(x.matches)]));
-  const csv = rows.map(r=>r.map(v=>`"${(v || "").replace(/"/g,'""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "organox_session_log.csv"; a.click(); URL.revokeObjectURL(a.href);
-}
-function resetLog(){ if(confirm("Clear session log?")){ localStorage.removeItem(LS_LOG_KEY); renderLog(); }}
+      searchTerms.forEach(term => {
+        const found = ERROR_CODES.filter(error => matchesCode(error.code, term));
+        matches.push(...found);
+      });
 
-// Edit
-function toggleEdit(){ const p=document.getElementById("editPane"); p.style.display = p.style.display==="none"?"block":"none"; }
-function v(id){ return document.getElementById(id).value.trim(); }
-function addEntry(){ const code=v('newCode'), pr=v('newPriority'), m=v('newMeaning'), c=v('newCauses'), a=v('newActions'); if(!code || !m){ alert("Code and Meaning required."); return; } const data=loadData(); if(data.some(e=>normCode(e.code)===normCode(code))){ alert("Code exists. Use Modify."); return; } data.push({code:code,priority:pr,meaning:m,causes:c,actions:a}); saveData(data); alert("Added."); }
-function applyEdit(){ const code=v('editCode'); if(!code){ alert("Enter exact code to edit."); return; } const data=loadData(); const idx=data.findIndex(e=>normCode(e.code)===normCode(code)); if(idx===-1){ alert("Code not found."); return; } const m=v('editMeaning'), c=v('editCauses'), a=v('editActions'), p=v('editPriority'); if(m) data[idx].meaning=m; if(c) data[idx].causes=c; if(a) data[idx].actions=a; if(p) data[idx].priority=p; saveData(data); alert("Updated."); }
-function deleteEntry(){ const code=v('editCode'); if(!code){ alert("Enter code to delete."); return; } if(!confirm("Delete code '"+code+"'?")) return; const data=loadData().filter(e=>normCode(e.code)!==normCode(code)); saveData(data); alert("Deleted (if existed)."); }
+      // Remove duplicates
+      const uniqueMatches = matches.filter((match, index, self) => 
+        index === self.findIndex(m => m.code === match.code)
+      );
 
-// Wire
-document.getElementById("lookupBtn").addEventListener("click",()=>{ const raw=document.getElementById("codeInput").value.trim(); if(!raw){ toast("Enter a code or text"); return; } const items=lookup(raw); render(items); addToLog(raw, items.length); });
-document.getElementById("showAllBtn").addEventListener("click",()=>{ const data=loadData(); render(data); addToLog("(all)", data.length); });
-document.getElementById("clearBtn").addEventListener("click",()=>{ document.getElementById("results").innerHTML=""; document.getElementById("count").textContent=""; });
-document.getElementById("toggleEdit").addEventListener("click",toggleEdit);
-document.getElementById("addEntry").addEventListener("click",addEntry);
-document.getElementById("applyEdit").addEventListener("click",applyEdit);
-document.getElementById("deleteEntry").addEventListener("click",deleteEntry);
-document.getElementById("exportData").addEventListener("click",()=>{ const blob=new Blob([JSON.stringify(loadData(),null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="organox_error_codes_dataset.json"; a.click(); URL.revokeObjectURL(a.href); });
-document.getElementById("importFile").addEventListener("change",(ev)=>{ const f=ev.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ try{ const arr=JSON.parse(e.target.result); if(!Array.isArray(arr)) throw new Error("Expected array"); saveData(arr); alert("Imported "+arr.length+" records."); }catch(err){ alert("Import failed: "+err.message); } }; r.readAsText(f); });
+      // Log the search
+      logSearch(input, uniqueMatches.length);
 
-renderLog();
-</script>
+      // Display results
+      setTimeout(() => {
+        displayResults(uniqueMatches, searchTerms);
+        document.getElementById('searchIcon').textContent = '🔍';
+      }, 300);
+    }
+
+    // Display all codes
+    function showAllCodes() {
+      logSearch('(show all)', ERROR_CODES.length);
+      displayResults(ERROR_CODES, ['(all codes)']);
+    }
+
+    // Clear results
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('codeInput').value = '';
+    }
+
+    // Display results
+    function displayResults(results, searchTerms) {
+      const resultsDiv = document.getElementById('results');
+      
+      if (results.length === 0) {
+        resultsDiv.innerHTML = `
+          <div class="card no-results">
+            <h3>No matches found</h3>
+            <p>Searched for: <span class="code-display">${searchTerms.join(', ')}</span></p>
+            <p>Try using wildcards like <code>10xx*</code> or check your spelling.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const resultsHtml = results.map(error => `
+        <div class="error-card">
+          <div class="error-header">
+            <div class="error-code">${escapeHtml(error.code)}</div>
+            <div class="tag tag-${error.priority.toLowerCase()}">${error.priority}</div>
+          </div>
+          <table class="details-table">
+            <tr>
+              <th>Meaning:</th>
+              <td><strong>${escapeHtml(error.meaning)}</strong></td>
+            </tr>
+            <tr>
+              <th>Causes:</th>
+              <td>${escapeHtml(error.causes)}</td>
+            </tr>
+            <tr>
+              <th>Actions:</th>
+              <td>${escapeHtml(error.actions)}</td>
+            </tr>
+          </table>
+        </div>
+      `).join('');
+
+      resultsDiv.innerHTML = `
+        <section class="card">
+          <h2>Found ${results.length} error code${results.length !== 1 ? 's' : ''}</h2>
+          <div class="results-grid">${resultsHtml}</div>
+        </section>
+      `;
+    }
+
+    // Session logging
+    function logSearch(query, resultCount) {
+      const timestamp = new Date().toLocaleString();
+      sessionLog.push({
+        time: timestamp,
+        query: query,
+        results: resultCount
+      });
+      
+      // Keep only last 50 searches
+      if (sessionLog.length > 50) {
+        sessionLog = sessionLog.slice(-50);
+      }
+      
+      saveSessionLog();
+      updateSessionInfo();
+    }
+
+    function updateSessionInfo() {
+      const info = document.getElementById('sessionInfo');
+      if (sessionLog.length === 0) {
+        info.textContent = 'No lookups yet';
+        return;
+      }
+
+      const recent = sessionLog.slice(-3).map(log => 
+        `${log.query} (${log.results})`
+      ).join(' • ');
+      
+      info.textContent = `Last: ${recent}`;
+    }
+
+    function saveSessionLog() {
+      try {
+        localStorage.setItem('organox_session_log', JSON.stringify(sessionLog));
+      } catch (e) {
+        console.warn('Could not save session log:', e);
+      }
+    }
+
+    function loadSessionLog() {
+      try {
+        const saved = localStorage.getItem('organox_session_log');
+        if (saved) {
+          sessionLog = JSON.parse(saved);
+        }
+      } catch (e) {
+        console.warn('Could not load session log:', e);
+        sessionLog = [];
+      }
+    }
+
+    function exportSessionLog() {
+      if (sessionLog.length === 0) {
+        alert('No session data to export');
+        return;
+      }
+
+      const csv = [
+        ['Timestamp', 'Query', 'Results Found'],
+        ...sessionLog.map(log => [log.time, log.query, log.results])
+      ].map(row => 
+        row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      ).join('\n');
+
+      downloadFile(csv, 'organox-session-log.csv', 'text/csv');
+    }
+
+    function clearSessionLog() {
+      if (confirm('Clear the entire session log?')) {
+        sessionLog = [];
+        saveSessionLog();
+        updateSessionInfo();
+      }
+    }
+
+    // Utility functions
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type: type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Register service worker for offline functionality
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
