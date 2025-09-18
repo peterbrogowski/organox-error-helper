@@ -1,7 +1,8 @@
 {
   "name": "OrganOx Error Code Helper",
   "short_name": "OrganOx Codes",
-  "start_url": "./OrganOx_Error_Code_Helper_v1.1.html",
+  "start_url": "/organox-error-helper/",
+  "scope": "/organox-error-helper/",
   "display": "standalone",
   "background_color": "#0b1320",
   "theme_color": "#0b1320",
