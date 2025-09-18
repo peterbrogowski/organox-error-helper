@@ -1,0 +1,20 @@
+{
+  "name": "OrganOx Error Code Helper",
+  "short_name": "OrganOx Codes",
+  "start_url": "./OrganOx_Error_Code_Helper_v1.1.html",
+  "display": "standalone",
+  "background_color": "#0b1320",
+  "theme_color": "#0b1320",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
